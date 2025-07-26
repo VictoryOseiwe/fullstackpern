@@ -31,7 +31,7 @@ app.use(async (req, res, next) => {
           error: "Too Many Request",
         });
       } else if (decision.reason.isBot()) {
-        res.status(403).json({ error: "Bot access denied" });
+        res.status(403).json({ error: "Bot access denied" }); //checking for bot
       } else {
         res.status(403).json({ error: "Forbidden" });
       }
