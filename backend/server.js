@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
-import helmet from "helmet";
+import helmet, { contentSecurityPolicy } from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import path from "path";
 import productRoutes from "./route/productRoutes.js";
 import { sql } from "./config/db.js";
 import { aj } from "./lib/arcjet.js";
@@ -12,8 +13,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const __dirname = path.resolve();
+
 app.use(cors());
-app.use(helmet()); // Set security-related HTTP headers
+app.use(helmet({ contentSecurityPolicy: false })); // Set security-related HTTP headers
 app.use(morgan("combined")); // log HTTP requests
 app.use(express.json()); // Parse JSON bodies
 
@@ -55,6 +58,13 @@ app.use(async (req, res, next) => {
 });
 
 app.use("/api/products", productRoutes); // Use product routes
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+}
 
 async function initDB() {
   try {
