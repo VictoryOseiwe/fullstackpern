@@ -1,9 +1,9 @@
+import path from "path";
 import express from "express";
 import cors from "cors";
 import helmet, { contentSecurityPolicy } from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import path from "path";
 import productRoutes from "./route/productRoutes.js";
 import { sql } from "./config/db.js";
 import { aj } from "./lib/arcjet.js";
@@ -60,9 +60,17 @@ app.use(async (req, res, next) => {
 app.use("/api/products", productRoutes); // Use product routes
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "frontend/dist")));
-  app.get("*", (req, res) => {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+  // app.get("*", (req, res) => {
+  //   res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  // });
+  app.get("/*splat", (req, res) => {
+    // Or use app.all("/*splat", ...)
     res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("API is running");
   });
 }
 

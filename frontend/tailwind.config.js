@@ -1,4 +1,5 @@
-import daisyui from "daisyui";
+// tailwind.config.js
+import daisyui from "daisyui"; // Keep this one
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -6,7 +7,7 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [daisyui],
+  plugins: [daisyui], // <--- **CHANGED: Only one entry for daisyui**
   daisyui: {
     themes: [
       "pastel",
